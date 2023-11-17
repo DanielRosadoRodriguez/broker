@@ -97,9 +97,7 @@ public class ThreadEchoHandlerBroker implements Runnable {
             in.close();
             out.close();
         } catch (Exception e) {
-
-        } finally {
-
-        }
+            e.printStackTrace();    
+        } 
     }
 }
