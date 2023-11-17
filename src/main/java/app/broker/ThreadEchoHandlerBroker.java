@@ -43,7 +43,7 @@ public class ThreadEchoHandlerBroker implements Runnable {
                     this.serversServices.add(requestJsonFromClient);
                     System.out.println("Se realizo con exito el registro");
                     break;
-                case "ejecutar":
+                case "votar":
                     System.out.println("Preparando la petición de votar del Broker para mandarlo al server");
 
                     JsonObject jsonObject = new JsonObject();
