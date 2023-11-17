@@ -37,7 +37,6 @@ public class ThreadEchoHandlerBroker implements Runnable {
             String typeService = requestJsonFromClient.get("servicio").getAsString();
             System.out.println("El servicio del cliente fue : " + typeService);
 
-            // Esto debe de ser un meno
             switch (typeService) {
                 case "regisrar":
                     this.serversServices.add(requestJsonFromClient);
@@ -68,6 +67,7 @@ public class ThreadEchoHandlerBroker implements Runnable {
                     out.println(tehBrokerServerRequestVotar.getResponse());
                     thread.interrupt();
 
+                    this.response = tehBrokerServerRequestVotar.getResponse();
                     break;
                 case "contar":
 
@@ -92,12 +92,7 @@ public class ThreadEchoHandlerBroker implements Runnable {
                     System.out.println("Servicio desconocido");
                     break;
             }
-            if (typeService.equals("registrar")) {
-            } else if (typeService.equals("ejecutar")) {
 
-            } else if (typeService.equals("contar")) {
-
-            }
             this.sockerServer.close();
             in.close();
             out.close();
