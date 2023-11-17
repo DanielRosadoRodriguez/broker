@@ -25,6 +25,7 @@ public class ControllerServer {
         productos[0] = administradorProductoServer.getProducto1();
         productos[1] = administradorProductoServer.getProducto2();
         productos[2] = administradorProductoServer.getProducto3();
+        
         return productos;
     }
 }

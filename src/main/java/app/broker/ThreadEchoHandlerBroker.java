@@ -12,6 +12,8 @@ public class ThreadEchoHandlerBroker implements Runnable{
 
     private Socket sockerServer;
     private List<JsonObject> serversServices;
+    private String response;
+
     public ThreadEchoHandlerBroker(Socket socketServer, List<JsonObject> serversServices) {
         this.serversServices = serversServices;
         this.sockerServer = socketServer;
@@ -36,6 +38,8 @@ public class ThreadEchoHandlerBroker implements Runnable{
             System.out.println("El servicio del cliente fue : " + typeService);
 
             //Esto debe de ser un meno
+
+            
             if(typeService.equals("registrar")){
 
                 this.serversServices.add(requestJsonFromClient);
