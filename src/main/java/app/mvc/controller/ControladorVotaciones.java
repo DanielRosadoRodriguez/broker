@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 
-public class ControladorVotaciones implements ActionListener{
+public class ControladorVotaciones implements ActionListener {
     private VotacionesVista votacionesVista;
 
     private JsonObject jsonProductos;
@@ -30,84 +30,94 @@ public class ControladorVotaciones implements ActionListener{
         this.votacionesVista = votacionesVista;
         cliente.sendMessageVotar("primero");
 
-        this.setJsonProductos(cliente.contarProductos());
+        try {
+            this.setJsonProductos(cliente.contarProductos());
+        } catch (Exception e) {
+            System.out.println("Error al obtener los productos en construc");
+        }
 
         iniciarComponentesGraficos();
-        
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Bitacora bitacora = new Bitacora();
         JsonObject productos = null;
-        if(e.getSource() == votacionesVista.votarBtnProducto1){
+        if (e.getSource() == votacionesVista.votarBtnProducto1) {
             JsonObject respuestaServer = cliente.sendMessageVotar("primero");
             String votaciones = respuestaServer.get("respuesta1").getAsString();
             actualizarContadorEnPantalla(8, this.votacionesVista.producto1ContadorLabel);
         }
-        if(e.getSource() == votacionesVista.votarBtnProducto2){
+        if (e.getSource() == votacionesVista.votarBtnProducto2) {
             JsonObject respuestaServer = cliente.sendMessageVotar("segundo");
             Integer votaciones = respuestaServer.get("valor2").getAsInt();
             actualizarContadorEnPantalla(8, this.votacionesVista.producto2ContadorLabel);
         }
-        if(e.getSource() == votacionesVista.votarBtnProducto3){
+        if (e.getSource() == votacionesVista.votarBtnProducto3) {
             JsonObject respuestaServer = cliente.sendMessageVotar("tercero");
             Integer votaciones = respuestaServer.get("valor2").getAsInt();
             actualizarContadorEnPantalla(8, this.votacionesVista.producto3ContadorLabel);
         }
-        if(e.getSource() == votacionesVista.verGraficasBtn){
-            System.out.println("1");
-            productos = cliente.contarProductos();
-            System.out.println("2");
-            this.productosArray = crearArregloProductos();
-            GraficaModelo graficaModelo = new GraficaModelo(this.productosArray);
-            GraficaBarrasVista graficaBarrasVista = new GraficaBarrasVista();
-            this.controladorGraficaBarras = new BarrasControl(graficaModelo, graficaBarrasVista);
-            GraficaPastelVista graficaPastelVista = new GraficaPastelVista();
-            controladorGraficaBarras.refresh(productos);
-            this.controladorGraficaPastel = new PastelControl(graficaModelo, graficaPastelVista);
-            controladorGraficaPastel.refresh(productos);
+        if (e.getSource() == votacionesVista.verGraficasBtn) {
+            try {
+                System.out.println("1");
+                productos = cliente.contarProductos();
+                System.out.println("2");
+                this.productosArray = crearArregloProductos();
+                GraficaModelo graficaModelo = new GraficaModelo(this.productosArray);
+                GraficaBarrasVista graficaBarrasVista = new GraficaBarrasVista();
+                this.controladorGraficaBarras = new BarrasControl(graficaModelo, graficaBarrasVista);
+                GraficaPastelVista graficaPastelVista = new GraficaPastelVista();
+                controladorGraficaBarras.refresh(productos);
+                this.controladorGraficaPastel = new PastelControl(graficaModelo, graficaPastelVista);
+                controladorGraficaPastel.refresh(productos);
+            } catch (Exception exception) {
+                System.out.println("Error al obtener los productos");
+            }
+
         }
-        
+
         refresh(productos);
     }
+
     private PastelControl controladorGraficaPastel;
     private BarrasControl controladorGraficaBarras;
-    private void refresh(JsonObject jsonProductos){
+
+    private void refresh(JsonObject jsonProductos) {
         this.controladorGraficaPastel.refresh(jsonProductos);
         this.controladorGraficaBarras.refresh(jsonProductos);
     }
-    
-    private ArrayList crearArregloProductos(){
+
+    private ArrayList crearArregloProductos() {
         ArrayList<ProductoCliente> productoClientes = new ArrayList<ProductoCliente>();
         productoClientes.add(new ProductoCliente(
-           this.jsonProductos.get("respuesta1").getAsString(),
-                this.jsonProductos.get("valor1").getAsInt()
-                ));
+                this.jsonProductos.get("respuesta1").getAsString(),
+                this.jsonProductos.get("valor1").getAsInt()));
         productoClientes.add(new ProductoCliente(
                 this.jsonProductos.get("respuesta2").getAsString(),
-                this.jsonProductos.get("valor2").getAsInt()
-        ));
+                this.jsonProductos.get("valor2").getAsInt()));
         productoClientes.add(new ProductoCliente(
                 this.jsonProductos.get("respuesta3").getAsString(),
-                this.jsonProductos.get("valor3").getAsInt()
-        ));
+                this.jsonProductos.get("valor3").getAsInt()));
         return productoClientes;
     }
-    
-    private void iniciarComponentesGraficos(){
+
+    private void iniciarComponentesGraficos() {
         this.votacionesVista.verGraficasBtn.addActionListener(this);
         this.votacionesVista.votarBtnProducto1.addActionListener(this);
         this.votacionesVista.votarBtnProducto2.addActionListener(this);
-        this.votacionesVista.votarBtnProducto3.addActionListener(this); 
-        //Obtener los nombres de los archivos sin extensión y mostrar en pantalla
+        this.votacionesVista.votarBtnProducto3.addActionListener(this);
+        // Obtener los nombres de los archivos sin extensión y mostrar en pantalla
         String nombreProducto1 = this.jsonProductos.get("respuesta1").getAsString();
         this.votacionesVista.producto1Label.setText(nombreProducto1);
-        String nombreProducto2 = this.jsonProductos.get("respuesta2").getAsString();;
+        String nombreProducto2 = this.jsonProductos.get("respuesta2").getAsString();
+        ;
         this.votacionesVista.producto2Label.setText(nombreProducto2);
-        String nombreProducto3 = this.jsonProductos.get("respuesta3").getAsString();;
-        this.votacionesVista.producto3Label.setText(nombreProducto3);  
-        //Contar cantidad de votos y mostrar en pantalla
+        String nombreProducto3 = this.jsonProductos.get("respuesta3").getAsString();
+        ;
+        this.votacionesVista.producto3Label.setText(nombreProducto3);
+        // Contar cantidad de votos y mostrar en pantalla
         int votosPrimero = this.jsonProductos.get("valor1").getAsInt();
         int votosSegundo = this.jsonProductos.get("valor2").getAsInt();
         int votosTercero = this.jsonProductos.get("valor3").getAsInt();
@@ -115,14 +125,11 @@ public class ControladorVotaciones implements ActionListener{
         actualizarContadorEnPantalla(votosSegundo, this.votacionesVista.producto2ContadorLabel);
         actualizarContadorEnPantalla(votosTercero, this.votacionesVista.producto3ContadorLabel);
 
-
-
     }
-    
-    private void actualizarContadorEnPantalla(Integer votos, JLabel contadorPorActualizar){
+
+    private void actualizarContadorEnPantalla(Integer votos, JLabel contadorPorActualizar) {
         contadorPorActualizar.setText(votos.toString());
     }
-
 
     public VotacionesVista getVotacionesVista() {
         return votacionesVista;
@@ -132,21 +139,18 @@ public class ControladorVotaciones implements ActionListener{
         this.votacionesVista = votacionesVista;
     }
 
-    public void setCliente(Cliente cliente){
-        if (cliente == null){
+    public void setCliente(Cliente cliente) {
+        if (cliente == null) {
             throw new NullPointerException("El cliente no puede ser nulo");
         }
         this.cliente = cliente;
     }
-    public void setJsonProductos(JsonObject jsonProductos){
-        if (jsonProductos == null){
+
+    public void setJsonProductos(JsonObject jsonProductos) {
+        if (jsonProductos == null) {
             throw new NullPointerException("El json de productos no puede ser nulo");
         }
         this.jsonProductos = jsonProductos;
     }
-    
-    
 
-    
-    
 }

@@ -1,5 +1,6 @@
 package app.mvc;
 
+import app.Exceptions.NullJsonException;
 import app.mvc.controller.ResourcesClientes;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -21,6 +22,8 @@ public class Cliente {
     private PrintWriter out;
     private BufferedReader in;
     private ResourcesClientes resourcesClientes = new ResourcesClientes();
+    private JsonObject response;
+
     public Cliente(String ip, int port){
         try {
             clientSocket = new Socket(ip, port);
@@ -58,8 +61,7 @@ public class Cliente {
         return response;
     }
 
-    public JsonObject contarProductos() {
-        JsonObject response = null;
+    public JsonObject contarProductos() throws NullJsonException {
             try {
                 /*
                  * Este metodo solo manda el servicio directo al server
@@ -72,11 +74,12 @@ public class Cliente {
                 System.out.println("Respuesta del broker al cliente para contar");
                 System.out.println(respuestaServidor);
 
-                response = gson.fromJson(respuestaServidor, JsonObject.class);
+                this.response = gson.fromJson(respuestaServidor, JsonObject.class);
+                return this.response;
             } catch (IOException e) {
                 System.out.println(e.getMessage());
+                throw new NullJsonException("Contar productos json es null");
             }
 
-        return response;
     }
 }
