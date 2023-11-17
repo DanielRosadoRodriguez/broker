@@ -1,5 +1,6 @@
 package app.mvc.controller;
 
+import app.Exceptions.NullJsonException;
 import app.mvc.Cliente;
 
 import app.mvc.model.Bitacora;
@@ -28,12 +29,21 @@ public class ControladorVotaciones implements ActionListener {
         this.setCliente(cliente);
 
         this.votacionesVista = votacionesVista;
-        cliente.sendMessageVotar("primero");
+        try {
+            cliente.sendMessageVotar("primero");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
-            this.setJsonProductos(cliente.contarProductos());
+            System.out.println("antes de cliente.contarProductos()");
+            JsonObject clienteProductos = cliente.contarProductos();
+            System.out.println("clienteProductos: " + clienteProductos);
+            this.setJsonProductos(clienteProductos);
+        } catch (NullJsonException e) {
+            System.out.println("Error al obtener los productos en construc cliente.contarProductos()");
         } catch (Exception e) {
-            System.out.println("Error al obtener los productos en construc");
+            System.out.println("ERROR DESCONOCIDO EN CONTROLADOR VOTACIONES");
         }
 
         iniciarComponentesGraficos();
@@ -45,19 +55,32 @@ public class ControladorVotaciones implements ActionListener {
         Bitacora bitacora = new Bitacora();
         JsonObject productos = null;
         if (e.getSource() == votacionesVista.votarBtnProducto1) {
-            JsonObject respuestaServer = cliente.sendMessageVotar("primero");
-            String votaciones = respuestaServer.get("respuesta1").getAsString();
-            actualizarContadorEnPantalla(8, this.votacionesVista.producto1ContadorLabel);
+            JsonObject respuestaServer;
+            try {
+                respuestaServer = cliente.sendMessageVotar("primero");
+                String votaciones = respuestaServer.get("respuesta1").getAsString();
+                actualizarContadorEnPantalla(8, this.votacionesVista.producto1ContadorLabel);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         if (e.getSource() == votacionesVista.votarBtnProducto2) {
-            JsonObject respuestaServer = cliente.sendMessageVotar("segundo");
-            Integer votaciones = respuestaServer.get("valor2").getAsInt();
-            actualizarContadorEnPantalla(8, this.votacionesVista.producto2ContadorLabel);
+            try {
+                JsonObject respuestaServer = cliente.sendMessageVotar("segundo");
+                Integer votaciones = respuestaServer.get("valor2").getAsInt();
+                actualizarContadorEnPantalla(8, this.votacionesVista.producto2ContadorLabel);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         if (e.getSource() == votacionesVista.votarBtnProducto3) {
-            JsonObject respuestaServer = cliente.sendMessageVotar("tercero");
-            Integer votaciones = respuestaServer.get("valor2").getAsInt();
-            actualizarContadorEnPantalla(8, this.votacionesVista.producto3ContadorLabel);
+            try {
+                JsonObject respuestaServer = cliente.sendMessageVotar("tercero");
+                Integer votaciones = respuestaServer.get("valor2").getAsInt();
+                actualizarContadorEnPantalla(8, this.votacionesVista.producto3ContadorLabel);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         if (e.getSource() == votacionesVista.verGraficasBtn) {
             try {

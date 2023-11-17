@@ -24,62 +24,63 @@ public class Cliente {
     private ResourcesClientes resourcesClientes = new ResourcesClientes();
     private JsonObject response;
 
-    public Cliente(String ip, int port){
+    public Cliente(String ip, int port) {
         try {
             clientSocket = new Socket(ip, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        } catch (ConnectException e){
+        } catch (ConnectException e) {
             System.out.println(e.getMessage() + " ;" + e.getCause() + " ;" + " ;" + Arrays.toString(e.getStackTrace()));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public JsonObject sendMessageVotar(String registro) {
-
-        JsonObject response = null;
+    public JsonObject sendMessageVotar(String registro) throws Exception {
         try {
             /*
              * Este metodo solo manda el servicio directo al server
-             * */
+             */
             JsonObject message = this.resourcesClientes.votar(registro);
             System.out.println("json votar: " + message);
             Gson gson = new Gson();
             out.println(gson.toJson(message));
-            //AQUI ES EL PROBLEMAAA
+            // AQUI ES EL PROBLEMAAA
+
             String respuestaServidor = in.readLine();
             System.out.println("despues del in (ya no imprime)");
 
             System.out.println("Respuesta del broker al cliente para votar");
-            System.out.println(respuestaServidor);
-            response = gson.fromJson(respuestaServidor, JsonObject.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            System.out.println("respuesta del servidor" + ":" + respuestaServidor);
 
-        return response;
+            this.response = gson.fromJson(respuestaServidor, JsonObject.class);
+            System.out.println("despues del gson (ya no imprime)");
+            return this.response;
+        } catch (Exception e) {
+            throw new Exception("UNDEFINED EXCEPTION - Al votar");
+        }
     }
 
     public JsonObject contarProductos() throws NullJsonException {
-            try {
-                /*
-                 * Este metodo solo manda el servicio directo al server
-                 * */
-                JsonObject message = this.resourcesClientes.contar();
-                Gson gson = new Gson();
-                out.println(gson.toJson(message));
-                String respuestaServidor = in.readLine();
+        try {
+            /*
+             * Este metodo solo manda el servicio directo al server
+             */
+            JsonObject message = this.resourcesClientes.contar();
+            Gson gson = new Gson();
+            out.println(gson.toJson(message));
+            String respuestaServidor = in.readLine();
 
-                System.out.println("Respuesta del broker al cliente para contar");
-                System.out.println(respuestaServidor);
+            System.out.println("Respuesta del broker al cliente para contar");
+            System.out.println(respuestaServidor);
 
-                this.response = gson.fromJson(respuestaServidor, JsonObject.class);
-                return this.response;
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                throw new NullJsonException("Contar productos json es null");
-            }
+            this.response = gson.fromJson(respuestaServidor, JsonObject.class);
+
+            return this.response;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            throw new NullJsonException("Contar productos json es null");
+        }
 
     }
 }
