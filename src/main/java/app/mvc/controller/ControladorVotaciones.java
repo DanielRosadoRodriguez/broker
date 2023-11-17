@@ -24,10 +24,13 @@ public class ControladorVotaciones implements ActionListener{
     private ArrayList<ProductoCliente> productosArray;
 
     public ControladorVotaciones(VotacionesVista votacionesVista, Cliente cliente) {
-        this.cliente = cliente;
+
+        this.setCliente(cliente);
+
         this.votacionesVista = votacionesVista;
         cliente.sendMessageVotar("primero");
-        this.jsonProductos = cliente.contarProductos();
+
+        this.setJsonProductos(cliente.contarProductos());
 
         iniciarComponentesGraficos();
         
@@ -129,6 +132,19 @@ public class ControladorVotaciones implements ActionListener{
         this.votacionesVista = votacionesVista;
     }
 
+    public void setCliente(Cliente cliente){
+        if (cliente == null){
+            throw new NullPointerException("El cliente no puede ser nulo");
+        }
+        this.cliente = cliente;
+    }
+    public void setJsonProductos(JsonObject jsonProductos){
+        if (jsonProductos == null){
+            throw new NullPointerException("El json de productos no puede ser nulo");
+        }
+        this.jsonProductos = jsonProductos;
+    }
+    
     
 
     
