@@ -37,7 +37,7 @@ public class ControladorVotaciones implements ActionListener {
 
         try {
             System.out.println("antes de cliente.contarProductos()");
-            JsonObject clienteProductos = cliente.contarProductos();
+            JsonObject clienteProductos = this.cliente.contarProductos();
             System.out.println("clienteProductos: " + clienteProductos);
             this.setJsonProductos(clienteProductos);
         } catch (NullJsonException e) {
@@ -46,7 +46,14 @@ public class ControladorVotaciones implements ActionListener {
             System.out.println("ERROR DESCONOCIDO EN CONTROLADOR VOTACIONES");
         }
 
+        try{
         iniciarComponentesGraficos();
+
+        }
+        catch (NullJsonException e){
+            System.out.println("NULL JSON EXCEPTION");
+            e.printStackTrace();
+        }
 
     }
 
@@ -126,7 +133,10 @@ public class ControladorVotaciones implements ActionListener {
         return productoClientes;
     }
 
-    private void iniciarComponentesGraficos() {
+    private void iniciarComponentesGraficos() throws NullJsonException {
+        if (this.jsonProductos == null) {
+            throw new NullJsonException("El json de productos no puede ser nulo");
+        }
         this.votacionesVista.verGraficasBtn.addActionListener(this);
         this.votacionesVista.votarBtnProducto1.addActionListener(this);
         this.votacionesVista.votarBtnProducto2.addActionListener(this);

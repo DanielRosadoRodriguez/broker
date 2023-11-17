@@ -54,7 +54,7 @@ public class Cliente {
             System.out.println("respuesta del servidor" + ":" + respuestaServidor);
 
             this.response = gson.fromJson(respuestaServidor, JsonObject.class);
-            System.out.println("despues del gson (ya no imprime)");
+            System.out.println("gson :" + this.response);
             return this.response;
         } catch (Exception e) {
             throw new Exception("UNDEFINED EXCEPTION - Al votar");
@@ -74,13 +74,17 @@ public class Cliente {
             System.out.println("Respuesta del broker al cliente para contar");
             System.out.println(respuestaServidor);
 
+            // el response es nulo
             this.response = gson.fromJson(respuestaServidor, JsonObject.class);
+            System.out.println("gson" + this.response);
 
+            if (this.response == null) {
+                System.out.println("ES NULO");
+            }  
             return this.response;
         } catch (IOException e) {
             System.out.println(e.getMessage());
             throw new NullJsonException("Contar productos json es null");
         }
-
     }
 }
