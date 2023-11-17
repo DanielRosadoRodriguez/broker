@@ -46,13 +46,11 @@ public class ControladorVotaciones implements ActionListener {
             System.out.println("ERROR DESCONOCIDO EN CONTROLADOR VOTACIONES");
         }
 
-        try{
-        iniciarComponentesGraficos();
+        try {
+            iniciarComponentesGraficos();
 
-        }
-        catch (NullJsonException e){
+        } catch (NullJsonException e) {
             System.out.println("NULL JSON EXCEPTION");
-            e.printStackTrace();
         }
 
     }
